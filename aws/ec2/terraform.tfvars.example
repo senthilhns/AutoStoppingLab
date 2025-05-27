@@ -1,13 +1,18 @@
-# name = "stoptest"
+# stack name
+name = "hns-1035"
+region = "us-east-1"
 
-alb_subnets = ["subnet-0f91c1012f9ad74c5", "subnet-0c4c1bc4cacd3cd4d"]
+# common networking
+vpc =  "vpc-0fxxxxxxxxxxxxx"
 
-ec2_subnet = "subnet-08f14e7142d333595"
+# ec2 instance
+ec2_subnet = "subnet-yyyyyyyyy"
+ami = "ami-0e35ddab05955cf57"
 
-vpc = "vpc-078b51c6cbc5581f1"
+# alb
+alb_subnets = ["subnet-yyyyyyyyy", "subnet-xxxxxxxx"]
+alb_certificate_arn = "arn:aws:acm:ap-south-1:xxxxxxxxxxx:certificate/08bcd2b0-3e84-40fd-bf49-37ce43644068"
 
-ami = "ami-075686beab831bb7f"
-
-# hostedzone = "Z05277053H89HS3J9I2TS"
-
-harness_cloud_connector_id = "cs"
+#harness
+harness_cloud_connector_id = "myconn07"
+alb_route53_dns_name = "as60.mynewdomain.com"
