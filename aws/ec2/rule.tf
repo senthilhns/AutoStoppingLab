@@ -1,3 +1,15 @@
+locals {
+  http = {
+    protocol = "http"
+    port     = "80"
+  }
+  https = {
+    protocol = "https"
+    port     = "443"
+  }
+  rule_routing = var.alb_certificate_arn != null ? [local.http, local.https] : [local.http]
+}
+
 # Import ALB and create autostopping rule
 resource "harness_autostopping_aws_alb" "harness_alb" {
   name               = "${local.name}-lb"
@@ -10,7 +22,7 @@ resource "harness_autostopping_aws_alb" "harness_alb" {
   # setting hosted zone is not needed when route53 is already set up externally
   # route53_hosted_zone_id            = "/hostedzone/${var.hostedzone}"
   delete_cloud_resources_on_destroy = false
-  certificate_id = var.alb_certificate_arn
+  certificate_id                    = var.alb_certificate_arn
 }
 
 resource "harness_autostopping_rule_vm" "rule" {
@@ -23,19 +35,15 @@ resource "harness_autostopping_rule_vm" "rule" {
   }
   http {
     proxy_id = harness_autostopping_aws_alb.harness_alb.identifier
-    routing {
-      source_protocol = "http"
-      target_protocol = "http"
-      source_port     = 80
-      target_port     = 80
-      action          = "forward"
-    }
-    routing {
-      source_protocol = "https"
-      target_protocol = "https"
-      source_port     = 443
-      target_port     = 443
-      action          = "forward"
+    dynamic "routing" {
+      for_each = local.rule_routing
+      content {
+        source_protocol = routing.value["protocol"]
+        target_protocol = routing.value["protocol"]
+        source_port     = routing.value["port"]
+        target_port     = routing.value["port"]
+        action          = "forward"
+      }
     }
     health {
       protocol         = "http"

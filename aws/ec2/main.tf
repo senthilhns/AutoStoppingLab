@@ -1,7 +1,7 @@
 locals {
   name = var.name == null ? random_pet.name.id : lower(var.name)
   # use route53 domain if given, otherwise fallback to default ALB DNS name
-  lb_hostname = var.hostedzone == null ? aws_lb.alb[0].dns_name : "${local.name}.${data.aws_route53_zone.zone[0].name}"
+  lb_hostname = var.alb_route53_dns_name != null ? var.alb_route53_dns_name : var.hostedzone == null ? aws_lb.alb[0].dns_name : "${local.name}.${data.aws_route53_zone.zone[0].name}"
   tags = {
     lb_hostname = local.lb_hostname
   }

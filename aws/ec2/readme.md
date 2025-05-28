@@ -20,6 +20,57 @@ Provision an EC2 instance, alb, and create an autostopping rule for the instance
 
 ![image](https://github.com/wings-software/AutoStoppingLab/assets/7338312/ab1a3163-3657-4244-833b-7e8ccb4b176b)
 
+### Patterns
+
+#### http
+
+create an ec2, alb, and autostopping rule using http and the default alb dns name:
+```
+region = "us-west-2"
+
+# common networking
+vpc = "vpc-02767cb7b8b634d54"
+
+# ec2 instance
+ec2_subnet = "subnet-022b0cf63cfa2b43e"
+
+# alb
+alb_subnets = ["subnet-0afa8a1877a19c619", "subnet-08515090d18fe4e56"]
+
+#harness
+harness_cloud_connector_id = "harness_impeng_play_ccm"
+```
+
+to use a custom domain, simple pass your route53 hosted zone id:
+```
+hostedzone = "Z00081583ARZJ9LTKZHRI"
+```
+
+#### https
+
+create an ec2, alb, and autostopping rule using http and https using a custom domain:
+```
+region = "us-west-2"
+
+# common networking
+vpc = "vpc-02767cb7b8b634d54"
+
+# ec2 instance
+ec2_subnet = "subnet-022b0cf63cfa2b43e"
+
+# alb
+alb_subnets = ["subnet-0afa8a1877a19c619", "subnet-08515090d18fe4e56"]
+
+# https information
+alb_certificate_arn = "arn:aws:acm:us-west-2:664418987337:certificate/bfb75fd2-a1d5-4de4-ab86-b2bc36983097"
+alb_route53_dns_name = "asec2albtest.isehrns.rileysnyder.dev"
+
+#harness
+harness_cloud_connector_id = "harness_impeng_play_ccm"
+```
+
+This requires that you have a certificate already created for the `alb_route53_dns_name` domain in your account
+
 ## Requirements
 
 | Name | Version |
