@@ -21,8 +21,6 @@ resource "aws_instance" "ec2" {
   user_data              = file("userdata.tpl")
   vpc_security_group_ids = [aws_security_group.allow_http.id]
   subnet_id              = var.ec2_subnet
-  iam_instance_profile   = "ssm"
-  key_name               = "riley"
   tags = {
     Name = "${local.name}-instance"
   }

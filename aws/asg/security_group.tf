@@ -4,11 +4,11 @@ resource "aws_security_group" "allow_http" {
   vpc_id      = var.vpc
 
   ingress {
-    description      = "Open HTTP"
-    from_port        = 80
-    to_port          = 80
-    protocol         = "tcp"
-    cidr_blocks      = [ "0.0.0.0/0" ]
+    description = "Open HTTP"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

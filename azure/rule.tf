@@ -14,8 +14,8 @@ resource "harness_autostopping_rule_vm" "vm" {
   cloud_connector_id = var.cloud_connector_id
   idle_time_mins     = 10
   filter {
-    vm_ids  = ["/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group}/providers/Microsoft.Compute/virtualMachines/${var.instance_id}"
-]
+    vm_ids = ["/subscriptions/${var.subscription_id}/resourceGroups/${var.resource_group}/providers/Microsoft.Compute/virtualMachines/${var.instance_id}"
+    ]
     regions = [var.region]
   }
   http {
@@ -36,5 +36,5 @@ resource "harness_autostopping_rule_vm" "vm" {
       status_code_to   = 299
     }
   }
-  custom_domains = [ "35.239.247.160.nip.io" ]
+  custom_domains = ["35.239.247.160.nip.io"]
 }

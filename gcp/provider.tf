@@ -7,8 +7,8 @@ terraform {
   }
 }
 provider "google" {
-  project     = "ccm-play"
-  region      = "us-central1"
+  project = "ccm-play"
+  region  = "us-central1"
 }
 provider "harness" {
   account_id       = var.account_id

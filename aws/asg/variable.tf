@@ -21,8 +21,8 @@ variable "ami" {
   default = "ami-0efcece6bed30fd98"
 }
 variable "availability_zones" {
-  type = list(string)
-  default = [ "us-west-2c","us-west-2b" ]
+  type    = list(string)
+  default = ["us-west-2c", "us-west-2b"]
 }
 variable "hostedzone" {
   type    = string

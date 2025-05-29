@@ -1,8 +1,8 @@
 resource "aws_launch_template" "template" {
-  image_id      = var.ami
-  instance_type = "t3.nano"
-  user_data     = filebase64("userdata.tpl")
-  vpc_security_group_ids = [ aws_security_group.allow_http.id ]
+  image_id               = var.ami
+  instance_type          = "t3.nano"
+  user_data              = filebase64("userdata.tpl")
+  vpc_security_group_ids = [aws_security_group.allow_http.id]
 }
 
 resource "aws_autoscaling_group" "asg" {
@@ -31,4 +31,4 @@ resource "aws_autoscaling_group" "asg" {
     triggers = ["tag"]
   }
 }
-  
+
