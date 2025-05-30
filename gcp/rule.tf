@@ -37,5 +37,5 @@ resource "harness_autostopping_rule_vm" "vm" {
       status_code_to   = 299
     }
   }
-  custom_domains = [ "35.239.247.160.nip.io" ]
+  custom_domains = ["35.239.247.160.nip.io"]
 }

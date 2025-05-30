@@ -68,5 +68,5 @@ resource "aws_lb_listener_rule" "static" {
 
 resource "aws_autoscaling_attachment" "asg" {
   autoscaling_group_name = aws_autoscaling_group.asg.name
-  lb_target_group_arn = aws_lb_target_group.http.arn
+  lb_target_group_arn    = aws_lb_target_group.http.arn
 }

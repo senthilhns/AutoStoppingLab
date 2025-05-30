@@ -1,5 +1,5 @@
 provider "kubernetes" {
-  config_path    = "~/.kube/config"
+  config_path = "~/.kube/config"
 }
 provider "kubectl" {
   apply_retry_count = 15

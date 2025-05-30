@@ -48,14 +48,14 @@ variable "harness_cloud_connector_id" {
   default = "AWS CCM connector for target AWS account"
 }
 
-variable alb_certificate_arn {
-  type = string
+variable "alb_certificate_arn" {
+  type        = string
   description = "Alb certificate ARN"
-  default = null
+  default     = null
 }
 
-variable alb_route53_dns_name {
-  type = string
+variable "alb_route53_dns_name" {
+  type        = string
   description = "alb dns name added in route 53"
-  default = null
+  default     = null
 }
