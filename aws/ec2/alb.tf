@@ -35,6 +35,15 @@ resource "aws_security_group" "http" {
     ipv6_cidr_blocks = ["::/0"]
   }
 
+  ingress {
+    description      = "Allow HTTPS traffic"
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
   egress {
     from_port        = 0
     to_port          = 0
@@ -72,5 +81,19 @@ resource "aws_lb_listener_rule" "static" {
     host_header {
       values = [local.lb_hostname]
     }
+  }
+}
+
+resource "aws_lb_listener" "https" {
+  count             = var.alb_certificate_arn != null ? 1 : 0
+  load_balancer_arn = var.alb_arn == null ? aws_lb.alb[0].arn : var.alb_arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.alb_certificate_arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.http.arn
   }
 }
