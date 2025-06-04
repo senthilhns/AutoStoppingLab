@@ -1,22 +1,38 @@
-
-data "aws_instances" "this" {
+data "aws_instances" "vm_instances" {
   instance_tags = {
-    Schedule = var.ec2_schedule_name_tag
+    Schedule = var.schedule_name_tag
   }
 }
 
-resource "harness_autostopping_rule_vm" "ec2_as_rule" {
-  for_each           = toset(data.aws_instances.this.ids)
-  name               = "${each.key}-us-work-hours-schedule"
+data "aws_db_instances" "db_instances" {
+  tags = {
+    Schedule = var.schedule_name_tag
+  }
+}
+
+resource "harness_autostopping_rule_vm" "ec2_auto_stop_rule" {
+  for_each = var.add_ec2_schedule_rules ? toset(data.aws_instances.vm_instances.ids) : []
+  name               = "${each.key}-ec2-us-work-hours-schedule"
   cloud_connector_id = var.harness_cloud_connector_id
   idle_time_mins     = 5
   filter {
-    vm_ids = [each.key]
+    vm_ids  = [each.key]
     regions = var.regions
   }
 }
 
-resource "harness_autostopping_schedule" "this" {
+resource "harness_autostopping_rule_rds" "rds_auto_stop_rule" {
+  for_each = var.add_ec2_schedule_rules ? toset(data.aws_db_instances.db_instances.instance_identifiers) : []
+  name               = "${each.key}-rds-us-work-hours-schedule"
+  cloud_connector_id = var.harness_cloud_connector_id
+  idle_time_mins     = 5
+  database {
+    id     = each.key
+    region = var.region
+  }
+}
+
+resource "harness_autostopping_schedule" "auto_stop_schedule" {
   name          = "usworkhours"
   schedule_type = "uptime"
   time_zone     = "EST"
@@ -27,9 +43,8 @@ resource "harness_autostopping_schedule" "this" {
     end_time   = "17:00"
   }
 
-  rules = concat([
-    for rule in harness_autostopping_rule_vm.ec2_as_rule : rule.id
-  ] /* , [
-    for rule in harness_autostopping_rule_rds.this : rule.id
-  ]*/)
+  rules = concat(
+    var.add_ec2_schedule_rules ? [for rule in harness_autostopping_rule_vm.ec2_auto_stop_rule : rule.id] : [],
+    var.add_rds_schedule_rules ? [for rule in harness_autostopping_rule_rds.rds_auto_stop_rule : rule.id] : []
+  )
 }

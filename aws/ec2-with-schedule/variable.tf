@@ -1,4 +1,3 @@
-
 variable "region" {
   type        = string
   default     = "us-west-2"
@@ -17,8 +16,19 @@ variable "harness_cloud_connector_id" {
   default = "AWS CCM connector for target AWS account"
 }
 
-variable "ec2_schedule_name_tag" {
+variable "schedule_name_tag" {
   type    = string
   default = null
 }
 
+variable "add_ec2_schedule_rules" {
+  type        = bool
+  description = "Whether to create EC2 schedule rules in Harness"
+  default     = true
+}
+
+variable "add_rds_schedule_rules" {
+  type        = bool
+  description = "Whether to create rds schedule rules in Harness"
+  default     = true
+}
