@@ -27,7 +27,7 @@ resource "harness_autostopping_rule_vm" "ec2_auto_stop_rule" {
 
 // Harness autostopping rule for each RDS instance that has the Schedule tag as var.schedule_name_tag
 resource "harness_autostopping_rule_rds" "rds_auto_stop_rule" {
-  for_each = var.add_ec2_schedule_rules ? toset(data.aws_db_instances.db_instances.instance_identifiers) : []
+  for_each = var.add_rds_schedule_rules ? toset(data.aws_db_instances.db_instances.instance_identifiers) : []
   name               = "${each.key}-rds-us-work-hours-schedule"
   cloud_connector_id = var.harness_cloud_connector_id
   idle_time_mins     = 5
