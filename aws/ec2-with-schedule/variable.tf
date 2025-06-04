@@ -1,9 +1,11 @@
+// Defines Terraform variables for configuring scheduling rules in AWS EC2 and RDS environments.
+// Terraform variables for scheduling rules
+
 variable "region" {
   type        = string
   default     = "us-west-2"
   description = "AWS region to deploy resources in"
 }
-
 
 variable "regions" {
   type        = list(string)
