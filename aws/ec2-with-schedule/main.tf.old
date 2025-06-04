@@ -1,0 +1,117 @@
+data "aws_instances" "this" {
+  instance_tags = {
+    Schedule = "us-work-hours"
+  }
+}
+
+data "aws_db_instances" "this" {
+  tags = {
+    Schedule = "us-work-hours"
+  }
+}
+
+resource "harness_autostopping_rule_vm" "this" {
+  for_each           = toset(data.aws_instances.this.ids)
+  name               = "${each.key} us-work-hours"
+  cloud_connector_id = "rileyharnessccm"
+  idle_time_mins     = 5
+  filter {
+    vm_ids = [
+      each.key
+    ]
+    regions = [
+      data.aws_instances.this.id # region of instances
+    ]
+  }
+}
+
+# rds
+resource "harness_autostopping_rule_rds" "this" {
+  for_each           = toset(data.aws_db_instances.this.instance_identifiers)
+  name               = "${each.key} us-work-hours"
+  cloud_connector_id = "rileyharnessccm"
+  idle_time_mins     = 5
+  database {
+    id     = each.key
+    region = data.aws_db_instances.this.id
+  }
+}
+
+resource "harness_autostopping_schedule" "this" {
+  name          = "usworkhours"
+  schedule_type = "uptime"
+  time_zone     = "EST"
+
+  repeats {
+    days       = ["MON", "TUE", "WED", "THU", "FRI"]
+    start_time = "11:00"
+    end_time   = "17:00"
+  }
+
+  rules = concat([
+    for rule in harness_autostopping_rule_vm.this : rule.id
+  ], [
+    for rule in harness_autostopping_rule_rds.this : rule.id
+  ])
+}
+
+# get all instances with out tag and value
+data "aws_instances" "this" {
+  instance_tags = {
+    Schedule = "us-work-hours"
+  }
+}
+
+# get all databases with out tag and value
+data "aws_db_instances" "this" {
+  tags = {
+    Schedule = "us-work-hours"
+  }
+}
+
+# create a rule for each instance we find
+resource "harness_autostopping_rule_vm" "this" {
+  for_each           = toset(data.aws_instances.this.ids)
+  name               = "${each.key} us-work-hours"
+  cloud_connector_id = "rileyharnessccm"
+  idle_time_mins     = 5
+  filter {
+    vm_ids = [
+      each.key
+    ]
+    regions = [
+      data.aws_instances.this.id # region of instances
+    ]
+  }
+}
+
+# create a rule for each database we find
+resource "harness_autostopping_rule_rds" "this" {
+  for_each           = toset(data.aws_db_instances.this.instance_identifiers)
+  name               = "${each.key} us-work-hours"
+  cloud_connector_id = "rileyharnessccm"
+  idle_time_mins     = 5
+  database {
+    id     = each.key
+    region = data.aws_db_instances.this.id
+  }
+}
+
+# create a schedule and attach each rule
+resource "harness_autostopping_schedule" "this" {
+  name          = "usworkhours"
+  schedule_type = "uptime"
+  time_zone     = "EST"
+
+  repeats {
+    days       = ["MON", "TUE", "WED", "THU", "FRI"]
+    start_time = "11:00"
+    end_time   = "17:00"
+  }
+
+  rules = concat([
+    for rule in harness_autostopping_rule_vm.this : rule.id
+  ], [
+    for rule in harness_autostopping_rule_rds.this : rule.id
+  ])
+}
