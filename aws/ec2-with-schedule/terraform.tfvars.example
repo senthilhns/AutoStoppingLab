@@ -1,0 +1,14 @@
+
+region = "us-west-2"
+regions = ["us-west-2"]
+
+# auto schedule ec2 and rds instances tag to use
+# ec2 and rds instances should have the tag key Schedule matching the below value
+schedule_name_tag = "as-test-schedule-01-tag"
+
+# to enable or disable ec2, rds scheduling rules
+add_ec2_schedule_rules = true
+add_ec2_schedule_rules = true
+
+#harness
+harness_cloud_connector_id = "my_harness_cloud_connector_id"
